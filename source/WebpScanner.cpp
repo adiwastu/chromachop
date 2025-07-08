@@ -1,4 +1,5 @@
 #include "WebpScanner.h"
+#include "WebpConverter.h"
 #include <iostream>
 #include <filesystem>
 
@@ -18,7 +19,19 @@ void WebpScanner::printWebpFiles() const
                 auto path = entry.path();
                 if (path.extension() == ".webp")
                 {
-                    std::cout << path.filename().string() << std::endl;
+                    std::string input = path.string();
+
+                    // Better way to change extension
+                    auto outputPath = path;
+                    outputPath.replace_extension(".jpg");
+                    std::string output = outputPath.string();
+
+                    std::cout << "Converting: " << input << " -> " << output << std::endl;
+
+                    if (!WebpConverter::convert(input, output))
+                    {
+                        std::cerr << "Failed to convert: " << input << std::endl;
+                    }
                 }
             }
         }
